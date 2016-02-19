@@ -2,6 +2,7 @@
 'use strict';
 
 var assert = require('assert');
+var parseUrl = require('url').parse;
 
 var getProxyForUrl = require('./').getProxyForUrl;
 
@@ -25,16 +26,20 @@ describe('getProxyForUrl', function() {
     process.env.ALL_PROXY = 'http://unexpected.proxy';
     assert.strictEqual('', getProxyForUrl('bogus'));
     assert.strictEqual('', getProxyForUrl('//example.com'));
+    assert.strictEqual('', getProxyForUrl('://example.com'));
+    assert.strictEqual('', getProxyForUrl('://'));
     assert.strictEqual('', getProxyForUrl('/path'));
     assert.strictEqual('', getProxyForUrl(''));
-
-    assert.throws(function() {
-      getProxyForUrl();
-    }, TypeError);  // "Parameter 'url' must be a string, not undefined"
-
-    assert.throws(function() {
-      getProxyForUrl({});
-    }, TypeError);  // "Parameter 'url' must be a string, not object"
+    assert.strictEqual('', getProxyForUrl('http:'));
+    assert.strictEqual('', getProxyForUrl('http:/'));
+    assert.strictEqual('', getProxyForUrl('http://'));
+    assert.strictEqual('', getProxyForUrl('prototype://'));
+    assert.strictEqual('', getProxyForUrl('hasOwnProperty://'));
+    assert.strictEqual('', getProxyForUrl('__proto__://'));
+    assert.strictEqual('', getProxyForUrl());
+    assert.strictEqual('', getProxyForUrl({}));
+    assert.strictEqual('', getProxyForUrl({host: 'x', protocol: 1}));
+    assert.strictEqual('', getProxyForUrl({host: 1, protocol: 'x'}));
   });
 
   it('http_proxy and HTTP_PROXY', function() {
@@ -42,6 +47,8 @@ describe('getProxyForUrl', function() {
 
     assert.strictEqual('', getProxyForUrl('https://example'));
     assert.strictEqual('http://http-proxy', getProxyForUrl('http://example'));
+    assert.strictEqual('http://http-proxy',
+        getProxyForUrl(parseUrl('http://example')));
     
     process.env.http_proxy = 'http://priority';
     assert.strictEqual('http://priority', getProxyForUrl('http://example'));

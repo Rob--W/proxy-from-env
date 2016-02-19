@@ -1,9 +1,11 @@
 # proxy-from-env
 
 `proxy-from-env` is a Node.js package that exports a function (`getProxyForUrl`)
-that takes an input URL (a string) and returns the desired proxy URL (also a
-string) based on standard proxy environment variables. If no proxy is set, an
-empty string is returned.
+that takes an input URL (a string or
+[`url.parse`](https://nodejs.org/docs/latest/api/url.html#url_url_parsing)'s
+return value) and returns the desired proxy URL (also a string) based on
+standard proxy environment variables. If no proxy is set, an empty string is
+returned.
 
 It is your responsibility to actually proxy the request using the given URL.
 

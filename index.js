@@ -3,12 +3,12 @@
 var parseUrl = require('url').parse;
 
 var DEFAULT_PORTS = {
-  'ftp:': 21,
-  'gopher:': 70,
-  'http:': 80,
-  'https:': 443,
-  'ws:': 80,
-  'wss:': 443,
+  ftp: 21,
+  gopher: 70,
+  http: 80,
+  https: 443,
+  ws: 80,
+  wss: 443,
 };
 
 var stringEndsWith = String.prototype.endsWith || function(s) {
@@ -17,28 +17,40 @@ var stringEndsWith = String.prototype.endsWith || function(s) {
 };
 
 /**
- * @param {string} url - The URL
+ * @param {string|object} url - The URL, or the result from url.parse.
  * @return {string} The URL of the proxy that should handle the request to the
  *  given URL. If no proxy is set, this will be an empty string.
  */
 function getProxyForUrl(url) {
-  var parsedUrl = parseUrl(url);
-  if (!parsedUrl.host || !shouldProxy(parsedUrl)) {
-    return '';  // Don't proxy invalid URLs or URLs that match NO_PROXY.
+  var parsedUrl = typeof url === 'string' ? parseUrl(url) : url || {};
+  var proto = parsedUrl.protocol;
+  var hostname = parsedUrl.host;
+  var port = parsedUrl.port;
+  if (typeof hostname !== 'string' || !hostname || typeof proto !== 'string') {
+    return '';  // Don't proxy URLs without a valid scheme or host.
   }
 
-  var proto = url.split(':', 1)[0];
+  proto = proto.split(':', 1)[0];
+  // Stripping ports in this way instead of using parsedUrl.hostname to make
+  // sure that the brackets around IPv6 addresses are kept.
+  hostname = hostname.replace(/:\d*$/, '');
+  port = parseInt(port) || DEFAULT_PORTS[proto] || 0;
+  if (!shouldProxy(hostname, port)) {
+    return '';  // Don't proxy URLs that match NO_PROXY.
+  }
+
   return getEnv(proto + '_proxy') || getEnv('all_proxy');
 }
 
 /**
  * Determines whether a given URL should be proxied.
  *
- * @param {object} parsedUrl - The result of url.parse
+ * @param {string} hostname - The host name of the URL.
+ * @param {number} port - The effective port of the URL.
  * @returns {boolean} Whether the given URL should be proxied.
  * @private
  */
-function shouldProxy(parsedUrl) {
+function shouldProxy(hostname, port) {
   var NO_PROXY = getEnv('no_proxy').toLowerCase();
   if (!NO_PROXY) {
     return true;  // Always proxy if NO_PROXY is not set.
@@ -46,11 +58,6 @@ function shouldProxy(parsedUrl) {
   if (NO_PROXY === '*') {
     return false;  // Never proxy if wildcard is set.
   }
-
-  var port = parseInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || 0;
-  // Stripping ports in this way instead of using parsedUrl.hostname to make
-  // sure that the brackets around IPv6 addresses are kept.
-  var hostname = parsedUrl.host.replace(/:\d*$/, '');
 
   return NO_PROXY.split(/[,\s]/).every(function(proxy) {
     if (!proxy) {
