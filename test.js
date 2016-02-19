@@ -277,4 +277,16 @@ describe('getProxyForUrl', function() {
     assert.strictEqual('', getProxyForUrl('ftp://xxx:21'));
     assert.strictEqual('http://ftp', getProxyForUrl('ftp://xxx:1337'));
   });
+
+  it('no_proxy should not be case-sensitive', function() {
+    process.env.ALL_PROXY = 'http://proxy';
+    process.env.NO_PROXY = 'XXX,YYY,ZzZ';
+
+    assert.strictEqual('', getProxyForUrl('http://xxx'));
+    assert.strictEqual('', getProxyForUrl('http://XXX'));
+    assert.strictEqual('', getProxyForUrl('http://yyy'));
+    assert.strictEqual('', getProxyForUrl('http://YYY'));
+    assert.strictEqual('', getProxyForUrl('http://ZzZ'));
+    assert.strictEqual('', getProxyForUrl('http://zZz'));
+  });
 });
