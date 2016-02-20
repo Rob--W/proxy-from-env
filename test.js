@@ -29,7 +29,10 @@ function testProxyUrl(env, expected, input) {
   // Save call stack for later use.
   var stack = {};
   Error.captureStackTrace(stack, testProxyUrl);
-  stack = stack.stack.replace(/^[^\n]+/, '');
+  // Only use the last stack frame because that shows where this function is
+  // called, and that is sufficient for our purpose. No need to flood the logs
+  // with an uninteresting stack trace.
+  stack = stack.stack.split('\n', 2)[1];
 
   it(title, function() {
     var actual;
