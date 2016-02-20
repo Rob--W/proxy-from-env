@@ -91,7 +91,7 @@ describe('getProxyForUrl', function() {
   });
 
   it('no_proxy empty', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTPS_PROXY = 'http://proxy';
 
     // NO_PROXY set but empty.
     process.env.NO_PROXY = '';
@@ -111,7 +111,7 @@ describe('getProxyForUrl', function() {
   });
   
   it('no_proxy=example (single host)', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = 'example';
     assert.strictEqual('', getProxyForUrl('http://example'));
@@ -126,7 +126,7 @@ describe('getProxyForUrl', function() {
   });
   
   it('no_proxy=sub.example (subdomain)', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = 'sub.example';
     assert.strictEqual('http://proxy', getProxyForUrl('http://example'));
@@ -140,7 +140,7 @@ describe('getProxyForUrl', function() {
   });
   
   it('no_proxy=example:80 (host + port)', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = 'example:80';
     assert.strictEqual('', getProxyForUrl('http://example'));
@@ -154,7 +154,7 @@ describe('getProxyForUrl', function() {
   });
   
   it('no_proxy=.example (host suffix)', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = '.example';
     assert.strictEqual('http://proxy', getProxyForUrl('http://example'));
@@ -169,7 +169,7 @@ describe('getProxyForUrl', function() {
   });
   
   it('no_proxy=*.example (host suffix with *.)', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = '*.example';
     assert.strictEqual('http://proxy', getProxyForUrl('http://example'));
@@ -184,7 +184,7 @@ describe('getProxyForUrl', function() {
   });
   
   it('no_proxy=*example (substring suffix)', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = '*example';
     assert.strictEqual('', getProxyForUrl('http://example'));
@@ -200,7 +200,7 @@ describe('getProxyForUrl', function() {
   });
   
   it('no_proxy=.*example (arbitrary wildcards are NOT supported)', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = '.*example';
     assert.strictEqual('http://proxy', getProxyForUrl('http://example'));
@@ -212,7 +212,7 @@ describe('getProxyForUrl', function() {
   });
   
   it('no_proxy=[::1],[::2]:80,10.0.0.1,10.0.0.2:80 (IP addresses)', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = '[::1],[::2]:80,10.0.0.1,10.0.0.2:80';
     assert.strictEqual('', getProxyForUrl('http://[::1]/'));
@@ -233,7 +233,7 @@ describe('getProxyForUrl', function() {
   });
 
   it('no_proxy=127.0.0.1/32 (CIDR is NOT supported)', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = '127.0.0.1/32';
     assert.strictEqual('http://proxy', getProxyForUrl('http://127.0.0.1'));
@@ -241,7 +241,7 @@ describe('getProxyForUrl', function() {
   });
 
   it('no_proxy=127.0.0.1 does NOT match localhost', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
 
     process.env.NO_PROXY = '127.0.0.1';
     assert.strictEqual('', getProxyForUrl('http://127.0.0.1'));
@@ -286,7 +286,7 @@ describe('getProxyForUrl', function() {
   });
 
   it('no_proxy should not be case-sensitive', function() {
-    process.env.ALL_PROXY = 'http://proxy';
+    process.env.HTTP_PROXY = 'http://proxy';
     process.env.NO_PROXY = 'XXX,YYY,ZzZ';
 
     assert.strictEqual('', getProxyForUrl('http://xxx'));
