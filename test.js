@@ -92,7 +92,9 @@ describe('getProxyForUrl', function() {
     testProxyUrl(env, 'http://http-proxy', 'http://example');
     testProxyUrl(env, 'http://http-proxy', parseUrl('http://example'));
 
+    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
     env.http_proxy = 'http://priority';
+    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
     testProxyUrl(env, 'http://priority', 'http://example');
   });
 
@@ -101,7 +103,7 @@ describe('getProxyForUrl', function() {
     // Crazy values should be passed as-is. It is the responsibility of the
     // one who launches the application that the value makes sense.
     // TODO: Should we be stricter and perform validation?
-    env.http_proxy = 'Crazy \n!() { :: }';
+    env.HTTP_PROXY = 'Crazy \n!() { :: }';
     testProxyUrl(env, 'Crazy \n!() { :: }', 'http://wow');
   });
 
@@ -114,14 +116,16 @@ describe('getProxyForUrl', function() {
     env.HTTPS_PROXY = 'http://https-proxy';
     testProxyUrl(env, 'http://https-proxy', 'https://example');
 
+    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
     env.https_proxy = 'http://priority';
+    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
     testProxyUrl(env, 'http://priority', 'https://example');
   });
 
   describe('ftp_proxy', function() {
     var env = {};
     // Something else than http_proxy / https, as a sanity check.
-    env.ftp_proxy = 'http://ftp-proxy';
+    env.FTP_PROXY = 'http://ftp-proxy';
 
     testProxyUrl(env, 'http://ftp-proxy', 'ftp://example');
     testProxyUrl(env, '', 'ftps://example');
@@ -132,7 +136,9 @@ describe('getProxyForUrl', function() {
     env.ALL_PROXY = 'http://catch-all';
     testProxyUrl(env, 'http://catch-all', 'https://example');
 
+    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
     env.all_proxy = 'http://priority';
+    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
     testProxyUrl(env, 'http://priority', 'https://example');
   });
 
