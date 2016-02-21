@@ -19,9 +19,10 @@ function runWithEnv(env, callback) {
 
 // Defines a test case that checks whether getProxyForUrl(input) === expected.
 function testProxyUrl(env, expected, input) {
+  assert(typeof env === 'object' && env !== null);
   // Copy object to make sure that the in param does not get modified between
   // the call of this function and the use of it below.
-  env = JSON.parse(JSON.stringify(env || {}));
+  env = JSON.parse(JSON.stringify(env));
 
   var title = 'getProxyForUrl(' + JSON.stringify(input) + ')' +
      ' === ' + JSON.stringify(expected);
