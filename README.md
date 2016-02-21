@@ -86,7 +86,7 @@ See `test.js` for examples of what should match and what does not.
 ### \*\_PROXY
 
 The environment variable used for the proxy depends on the protocol of the URL.
-For example, `https://example,com` uses the "https" protocol, and therefore the
+For example, `https://example.com` uses the "https" protocol, and therefore the
 proxy to be used is `HTTPS_PROXY` (_NOT_ `HTTP_PROXY`, which is _only_ used for
 http:-URLs).
 
