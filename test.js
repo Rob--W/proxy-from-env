@@ -225,6 +225,13 @@ describe('getProxyForUrl', function() {
     testProxyUrl(env, '', 'http://a.b.example');
   });
 
+  describe('no_proxy=*', function() {
+    var env = {};
+    env.HTTP_PROXY = 'http://proxy';
+    env.NO_PROXY = '*';
+    testProxyUrl(env, '', 'http://example.com');
+  });
+
   describe('no_proxy=*.example (host suffix with *.)', function() {
     var env = {};
     env.HTTP_PROXY = 'http://proxy';
