@@ -27,7 +27,15 @@ var http = require('http');
 var parseUrl = require('url').parse;
 var getProxyForUrl = require('proxy-from-env').getProxyForUrl;
 
-var some_url = 'https://example.com/something';
+var some_url = 'http://example.com/something';
+
+// // Example, if there is a proxy server at 10.0.0.1:1234, then setting the
+// // http_proxy environment variable causes the request to go through a proxy.
+// process.env.http_proxy = 'http://10.0.0.1:1234';
+// 
+// // But if the host to be proxied is listed in NO_PROXY, then the request is
+// // not proxied (but a direct request is made).
+// process.env.no_proxy = 'example.com';
 
 var proxy_url = getProxyForUrl(some_url);  // <-- Our magic.
 if (proxy_url) {
@@ -52,7 +60,7 @@ if (proxy_url) {
 }
 http.get(httpOptions, function(res) {
   var responses = [];
-  res.on('data', function() { responses.push(chunk); });
+  res.on('data', function(chunk) { responses.push(chunk); });
   res.on('end', function() { console.log(responses.join(''));  });
 });
 
