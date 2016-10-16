@@ -116,6 +116,7 @@ The following resources were used to determine the desired behavior:
 - cURL:
   https://curl.haxx.se/docs/manpage.html#ENVIRONMENT  
   https://github.com/curl/curl/blob/4af40b3646d3b09f68e419f7ca866ff395d1f897/lib/url.c#L4446-L4514  
+  https://github.com/curl/curl/blob/4af40b3646d3b09f68e419f7ca866ff395d1f897/lib/url.c#L4608-L4638  
 
 - wget: 
   https://www.gnu.org/software/wget/manual/wget.html#Proxies  
@@ -126,4 +127,5 @@ The following resources were used to determine the desired behavior:
   https://www.w3.org/Daemon/User/Proxies/ProxyClients.html  
 
 - Python's urllib:
+  https://github.com/python/cpython/blob/936135bb97fe04223aa30ca6e98eac8f3ed6b349/Lib/urllib/request.py#L755-L782  
   https://github.com/python/cpython/blob/936135bb97fe04223aa30ca6e98eac8f3ed6b349/Lib/urllib/request.py#L2444-L2479

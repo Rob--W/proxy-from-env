@@ -104,8 +104,14 @@ describe('getProxyForUrl', function() {
     // Crazy values should be passed as-is. It is the responsibility of the
     // one who launches the application that the value makes sense.
     // TODO: Should we be stricter and perform validation?
-    env.HTTP_PROXY = 'Crazy \n!() { :: }';
-    testProxyUrl(env, 'Crazy \n!() { :: }', 'http://wow');
+    env.HTTP_PROXY = 'Crazy \n!() { ::// }';
+    testProxyUrl(env, 'Crazy \n!() { ::// }', 'http://wow');
+
+    // The implementation assumes that the HTTP_PROXY environment variable is
+    // somewhat reasonable, and if the scheme is missing, it is added.
+    // Garbage in, garbage out some would say...
+    env.HTTP_PROXY = 'crazy without colon slash slash';
+    testProxyUrl(env, 'http://crazy without colon slash slash', 'http://wow');
   });
 
   describe('https_proxy and HTTPS_PROXY', function() {
@@ -141,6 +147,19 @@ describe('getProxyForUrl', function() {
     env.all_proxy = 'http://priority';
     // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
     testProxyUrl(env, 'http://priority', 'https://example');
+  });
+
+  describe('all_proxy without scheme', function() {
+    var env = {};
+    env.ALL_PROXY = 'noscheme';
+    testProxyUrl(env, 'http://noscheme', 'http://example');
+    testProxyUrl(env, 'https://noscheme', 'https://example');
+
+    // The module does not impose restrictions on the scheme.
+    testProxyUrl(env, 'bogus-scheme://noscheme', 'bogus-scheme://example');
+
+    // But the URL should still be valid.
+    testProxyUrl(env, '', 'bogus');
   });
 
   describe('no_proxy empty', function() {
