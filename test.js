@@ -167,7 +167,7 @@ describe('getProxyForUrl', function() {
     env.HTTPS_PROXY = 'http://proxy';
 
     // NO_PROXY set but empty.
-    process.env.NO_PROXY = '';
+    env.NO_PROXY = '';
     testProxyUrl(env, 'http://proxy', 'https://example');
 
     // No entries in NO_PROXY (comma).
