@@ -39,7 +39,7 @@ function getProxyForUrl(url) {
     return '';  // Don't proxy URLs that match NO_PROXY.
   }
 
-  var proxy = getEnv('npm_config_' + proto + '_proxy') || getEnv('npm_config_proxy') || getEnv(proto + '_proxy') || getEnv('all_proxy');
+  var proxy = getEnv('npm_config_' + proto + '_proxy') || getEnv(proto + '_proxy') || getEnv('npm_config_proxy') || getEnv('all_proxy');
   if (proxy && proxy.indexOf('://') === -1) {
     // Missing scheme in proxy, default to the requested URL's scheme.
     proxy = proto + '://' + proxy;

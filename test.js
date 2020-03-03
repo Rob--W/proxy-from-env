@@ -455,16 +455,15 @@ describe('getProxyForUrl', function() {
       testProxyUrl(env, 'http://priority', 'http://example');
       testProxyUrl(env, 'http://priority', 'https://example');
     });
-    describe('npm_config_https_proxy should take precedence over both HTTP_PROXY and HTTPS_PROXY', function() {
+    describe('HTTP_PROXY and HTTPS_PROXY should take precedence over npm_config_proxy', function() {
       var env = {};
+      env.HTTP_PROXY = 'http://http-proxy';
+      env.HTTPS_PROXY = 'http://https-proxy';
       // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-      env.npm_config_proxy = 'http://http-proxy';
+      env.npm_config_proxy = 'http://unexpected-proxy';
       // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
-      env.HTTPS_PROXY = 'http://unexpected-https-proxy';
-      env.HTTP_PROXY = 'http://unexpected-http-proxy';
-
       testProxyUrl(env, 'http://http-proxy', 'http://example');
-      testProxyUrl(env, 'http://http-proxy', 'https://example');
+      testProxyUrl(env, 'http://https-proxy', 'https://example');
     });
     describe('npm_config_no_proxy should work', function() {
       var env = {};
