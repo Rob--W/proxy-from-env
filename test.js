@@ -1,4 +1,4 @@
-/* jshint mocha:true */
+/* eslint max-statements:0 */
 'use strict';
 
 var assert = require('assert');
@@ -93,9 +93,8 @@ describe('getProxyForUrl', function() {
     testProxyUrl(env, 'http://http-proxy', 'http://example');
     testProxyUrl(env, 'http://http-proxy', parseUrl('http://example'));
 
-    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+    // eslint-disable-next-line camelcase
     env.http_proxy = 'http://priority';
-    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
     testProxyUrl(env, 'http://priority', 'http://example');
   });
 
@@ -123,9 +122,8 @@ describe('getProxyForUrl', function() {
     env.HTTPS_PROXY = 'http://https-proxy';
     testProxyUrl(env, 'http://https-proxy', 'https://example');
 
-    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+    // eslint-disable-next-line camelcase
     env.https_proxy = 'http://priority';
-    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
     testProxyUrl(env, 'http://priority', 'https://example');
   });
 
@@ -143,9 +141,8 @@ describe('getProxyForUrl', function() {
     env.ALL_PROXY = 'http://catch-all';
     testProxyUrl(env, 'http://catch-all', 'https://example');
 
-    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+    // eslint-disable-next-line camelcase
     env.all_proxy = 'http://priority';
-    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
     testProxyUrl(env, 'http://priority', 'https://example');
   });
 
@@ -394,63 +391,58 @@ describe('getProxyForUrl', function() {
   describe('NPM proxy configuration', function() {
     describe('npm_config_http_proxy should work', function() {
       var env = {};
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_http_proxy = 'http://http-proxy';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 
       testProxyUrl(env, '', 'https://example');
       testProxyUrl(env, 'http://http-proxy', 'http://example');
 
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_http_proxy = 'http://priority';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
       testProxyUrl(env, 'http://priority', 'http://example');
     });
     describe('npm_config_http_proxy should take precedence over HTTP_PROXY and npm_config_proxy', function() {
       var env = {};
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_http_proxy = 'http://http-proxy';
+      // eslint-disable-next-line camelcase
       env.npm_config_proxy = 'http://unexpected-proxy';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
       env.HTTP_PROXY = 'http://unexpected-proxy';
 
       testProxyUrl(env, 'http://http-proxy', 'http://example');
     });
     describe('npm_config_https_proxy should work', function() {
       var env = {};
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_http_proxy = 'http://unexpected.proxy';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
       testProxyUrl(env, '', 'https://example');
 
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_https_proxy = 'http://https-proxy';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
       testProxyUrl(env, 'http://https-proxy', 'https://example');
 
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_https_proxy = 'http://priority';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
       testProxyUrl(env, 'http://priority', 'https://example');
     });
     describe('npm_config_https_proxy should take precedence over HTTPS_PROXY and npm_config_proxy', function() {
       var env = {};
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_https_proxy = 'http://https-proxy';
+      // eslint-disable-next-line camelcase
       env.npm_config_proxy = 'http://unexpected-proxy';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
       env.HTTPS_PROXY = 'http://unexpected-proxy';
 
       testProxyUrl(env, 'http://https-proxy', 'https://example');
     });
     describe('npm_config_proxy should work', function() {
       var env = {};
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_proxy = 'http://http-proxy';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
       testProxyUrl(env, 'http://http-proxy', 'http://example');
       testProxyUrl(env, 'http://http-proxy', 'https://example');
 
+      // eslint-disable-next-line camelcase
       env.npm_config_proxy = 'http://priority';
       testProxyUrl(env, 'http://priority', 'http://example');
       testProxyUrl(env, 'http://priority', 'https://example');
@@ -459,18 +451,16 @@ describe('getProxyForUrl', function() {
       var env = {};
       env.HTTP_PROXY = 'http://http-proxy';
       env.HTTPS_PROXY = 'http://https-proxy';
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_proxy = 'http://unexpected-proxy';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
       testProxyUrl(env, 'http://http-proxy', 'http://example');
       testProxyUrl(env, 'http://https-proxy', 'https://example');
     });
     describe('npm_config_no_proxy should work', function() {
       var env = {};
       env.HTTP_PROXY = 'http://proxy';
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_no_proxy = 'example';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 
       testProxyUrl(env, '', 'http://example');
       testProxyUrl(env, 'http://proxy', 'http://otherwebsite');
@@ -479,9 +469,8 @@ describe('getProxyForUrl', function() {
       var env = {};
       env.HTTP_PROXY = 'http://proxy';
       env.NO_PROXY = 'otherwebsite';
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+      // eslint-disable-next-line camelcase
       env.npm_config_no_proxy = 'example';
-      // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 
       testProxyUrl(env, '', 'http://example');
       testProxyUrl(env, 'http://proxy', 'http://otherwebsite');
