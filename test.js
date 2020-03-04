@@ -401,6 +401,7 @@ describe('getProxyForUrl', function() {
       env.npm_config_http_proxy = 'http://priority';
       testProxyUrl(env, 'http://priority', 'http://example');
     });
+    // eslint-disable-next-line max-len
     describe('npm_config_http_proxy should take precedence over HTTP_PROXY and npm_config_proxy', function() {
       var env = {};
       // eslint-disable-next-line camelcase
@@ -425,6 +426,7 @@ describe('getProxyForUrl', function() {
       env.npm_config_https_proxy = 'http://priority';
       testProxyUrl(env, 'http://priority', 'https://example');
     });
+    // eslint-disable-next-line max-len
     describe('npm_config_https_proxy should take precedence over HTTPS_PROXY and npm_config_proxy', function() {
       var env = {};
       // eslint-disable-next-line camelcase
@@ -447,6 +449,7 @@ describe('getProxyForUrl', function() {
       testProxyUrl(env, 'http://priority', 'http://example');
       testProxyUrl(env, 'http://priority', 'https://example');
     });
+    // eslint-disable-next-line max-len
     describe('HTTP_PROXY and HTTPS_PROXY should take precedence over npm_config_proxy', function() {
       var env = {};
       env.HTTP_PROXY = 'http://http-proxy';
@@ -465,6 +468,7 @@ describe('getProxyForUrl', function() {
       testProxyUrl(env, '', 'http://example');
       testProxyUrl(env, 'http://proxy', 'http://otherwebsite');
     });
+    // eslint-disable-next-line max-len
     describe('npm_config_no_proxy should take precedence over NO_PROXY', function() {
       var env = {};
       env.HTTP_PROXY = 'http://proxy';
