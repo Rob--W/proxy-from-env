@@ -1,14 +1,13 @@
 /* eslint max-statements:0 */
-'use strict';
 
-var assert = require('assert');
-var parseUrl = require('url').parse;
+let assert = require('assert');
+let parseUrl = require('url').parse;
 
-var getProxyForUrl = require('./').getProxyForUrl;
+let getProxyForUrl = require('./').getProxyForUrl;
 
 // Runs the callback with process.env temporarily set to env.
 function runWithEnv(env, callback) {
-  var originalEnv = process.env;
+  let originalEnv = process.env;
   process.env = env;
   try {
     callback();
@@ -34,7 +33,7 @@ function testProxyUrl(env, expected, input, options) {
   }`;
 
   // Save call stack for later use.
-  var stack = {};
+  let stack = {};
   Error.captureStackTrace(stack, testProxyUrl);
   // Only use the last stack frame because that shows where this function is
   // called, and that is sufficient for our purpose. No need to flood the logs
@@ -42,7 +41,7 @@ function testProxyUrl(env, expected, input, options) {
   stack = stack.stack.split('\n', 2)[1];
 
   it(title, function() {
-    var actual;
+    let actual;
     runWithEnv(env, function() {
       actual = getProxyForUrl(input, options);
     });
@@ -62,15 +61,15 @@ function testProxyUrl(env, expected, input, options) {
 }
 
 describe('getProxyForUrl', function() {
-  describe('No proxy variables', function() {
-    var env = {};
+  describe('No proxy letiables', function() {
+    let env = {};
     testProxyUrl(env, '', 'http://example.com');
     testProxyUrl(env, '', 'https://example.com');
     testProxyUrl(env, '', 'ftp://example.com');
   });
 
   describe('Invalid URLs', function() {
-    var env = {};
+    let env = {};
     env.ALL_PROXY = 'http://unexpected.proxy';
     testProxyUrl(env, '', 'bogus');
     testProxyUrl(env, '', '//example.com');
@@ -92,7 +91,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('http_proxy and HTTP_PROXY', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://http-proxy';
 
     testProxyUrl(env, '', 'https://example');
@@ -105,14 +104,14 @@ describe('getProxyForUrl', function() {
   });
 
   describe('http_proxy with non-sensical value', function() {
-    var env = {};
+    let env = {};
     // Crazy values should be passed as-is. It is the responsibility of the
     // one who launches the application that the value makes sense.
     // TODO: Should we be stricter and perform validation?
     env.HTTP_PROXY = 'Crazy \n!() { ::// }';
     testProxyUrl(env, 'Crazy \n!() { ::// }', 'http://wow');
 
-    // The implementation assumes that the HTTP_PROXY environment variable is
+    // The implementation assumes that the HTTP_PROXY environment letiable is
     // somewhat reasonable, and if the scheme is missing, it is added.
     // Garbage in, garbage out some would say...
     env.HTTP_PROXY = 'crazy without colon slash slash';
@@ -120,7 +119,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('https_proxy and HTTPS_PROXY', function() {
-    var env = {};
+    let env = {};
     // Assert that there is no fall back to http_proxy
     env.HTTP_PROXY = 'http://unexpected.proxy';
     testProxyUrl(env, '', 'https://example');
@@ -134,7 +133,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('ftp_proxy', function() {
-    var env = {};
+    let env = {};
     // Something else than http_proxy / https, as a sanity check.
     env.FTP_PROXY = 'http://ftp-proxy';
 
@@ -143,7 +142,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('all_proxy', function() {
-    var env = {};
+    let env = {};
     env.ALL_PROXY = 'http://catch-all';
     testProxyUrl(env, 'http://catch-all', 'https://example');
 
@@ -153,7 +152,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('all_proxy without scheme', function() {
-    var env = {};
+    let env = {};
     env.ALL_PROXY = 'noscheme';
     testProxyUrl(env, 'http://noscheme', 'http://example');
     testProxyUrl(env, 'https://noscheme', 'https://example');
@@ -166,7 +165,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy empty', function() {
-    var env = {};
+    let env = {};
     env.HTTPS_PROXY = 'http://proxy';
 
     // NO_PROXY set but empty.
@@ -187,7 +186,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy=example (single host)', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = 'example';
@@ -203,7 +202,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy=sub.example (subdomain)', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = 'sub.example';
@@ -218,7 +217,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy=example:80 (host + port)', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = 'example:80';
@@ -233,7 +232,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy=.example (host suffix)', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = '.example';
@@ -249,14 +248,14 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy=*', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
     env.NO_PROXY = '*';
     testProxyUrl(env, '', 'http://example.com');
   });
 
   describe('no_proxy=*.example (host suffix with *.)', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = '*.example';
@@ -272,7 +271,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy=*example (substring suffix)', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = '*example';
@@ -290,7 +289,7 @@ describe('getProxyForUrl', function() {
 
   describe('no_proxy=.*example (arbitrary wildcards are NOT supported)',
       function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = '.*example';
@@ -304,7 +303,7 @@ describe('getProxyForUrl', function() {
 
   describe('no_proxy=[::1],[::2]:80,10.0.0.1,10.0.0.2:80 (IP addresses)',
       function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = '[::1],[::2]:80,10.0.0.1,10.0.0.2:80';
@@ -326,7 +325,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy=127.0.0.1/32 (CIDR is NOT supported)', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = '127.0.0.1/32';
@@ -335,7 +334,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy=127.0.0.1 does NOT match localhost', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
 
     env.NO_PROXY = '127.0.0.1';
@@ -345,7 +344,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy with protocols that have a default port', function() {
-    var env = {};
+    let env = {};
     env.WS_PROXY = 'http://ws';
     env.WSS_PROXY = 'http://wss';
     env.HTTP_PROXY = 'http://http';
@@ -382,7 +381,7 @@ describe('getProxyForUrl', function() {
   });
 
   describe('no_proxy should not be case-sensitive', function() {
-    var env = {};
+    let env = {};
     env.HTTP_PROXY = 'http://proxy';
     env.NO_PROXY = 'XXX,YYY,ZzZ';
 
@@ -396,7 +395,7 @@ describe('getProxyForUrl', function() {
 
   describe('NPM proxy configuration', function() {
     describe('npm_config_http_proxy should work', function() {
-      var env = {};
+      let env = {};
       // eslint-disable-next-line camelcase
       env.npm_config_http_proxy = 'http://http-proxy';
 
@@ -409,7 +408,7 @@ describe('getProxyForUrl', function() {
     });
     // eslint-disable-next-line max-len
     describe('npm_config_http_proxy should take precedence over HTTP_PROXY and npm_config_proxy', function() {
-      var env = {};
+      let env = {};
       // eslint-disable-next-line camelcase
       env.npm_config_http_proxy = 'http://http-proxy';
       // eslint-disable-next-line camelcase
@@ -419,7 +418,7 @@ describe('getProxyForUrl', function() {
       testProxyUrl(env, 'http://http-proxy', 'http://example');
     });
     describe('npm_config_https_proxy should work', function() {
-      var env = {};
+      let env = {};
       // eslint-disable-next-line camelcase
       env.npm_config_http_proxy = 'http://unexpected.proxy';
       testProxyUrl(env, '', 'https://example');
@@ -434,7 +433,7 @@ describe('getProxyForUrl', function() {
     });
     // eslint-disable-next-line max-len
     describe('npm_config_https_proxy should take precedence over HTTPS_PROXY and npm_config_proxy', function() {
-      var env = {};
+      let env = {};
       // eslint-disable-next-line camelcase
       env.npm_config_https_proxy = 'http://https-proxy';
       // eslint-disable-next-line camelcase
@@ -444,7 +443,7 @@ describe('getProxyForUrl', function() {
       testProxyUrl(env, 'http://https-proxy', 'https://example');
     });
     describe('npm_config_proxy should work', function() {
-      var env = {};
+      let env = {};
       // eslint-disable-next-line camelcase
       env.npm_config_proxy = 'http://http-proxy';
       testProxyUrl(env, 'http://http-proxy', 'http://example');
@@ -457,7 +456,7 @@ describe('getProxyForUrl', function() {
     });
     // eslint-disable-next-line max-len
     describe('HTTP_PROXY and HTTPS_PROXY should take precedence over npm_config_proxy', function() {
-      var env = {};
+      let env = {};
       env.HTTP_PROXY = 'http://http-proxy';
       env.HTTPS_PROXY = 'http://https-proxy';
       // eslint-disable-next-line camelcase
@@ -466,7 +465,7 @@ describe('getProxyForUrl', function() {
       testProxyUrl(env, 'http://https-proxy', 'https://example');
     });
     describe('npm_config_no_proxy should work', function() {
-      var env = {};
+      let env = {};
       env.HTTP_PROXY = 'http://proxy';
       // eslint-disable-next-line camelcase
       env.npm_config_no_proxy = 'example';
@@ -476,7 +475,7 @@ describe('getProxyForUrl', function() {
     });
     // eslint-disable-next-line max-len
     describe('npm_config_no_proxy should take precedence over NO_PROXY', function() {
-      var env = {};
+      let env = {};
       env.HTTP_PROXY = 'http://proxy';
       env.NO_PROXY = 'otherwebsite';
       // eslint-disable-next-line camelcase
