@@ -1,8 +1,11 @@
 {
   "name": "proxy-from-env",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Offers getProxyForUrl to get the proxy URL for a URL, respecting the *_PROXY (e.g. HTTP_PROXY) and NO_PROXY environment variables.",
   "main": "index.js",
+  "engines": {
+    "node": ">=10"
+  },
   "scripts": {
     "lint": "eslint *.js",
     "test": "mocha ./test.js",

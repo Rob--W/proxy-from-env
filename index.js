@@ -1,19 +1,12 @@
-'use strict';
+const parseUrl = require('url').parse;
 
-let parseUrl = require('url').parse;
-
-let DEFAULT_PORTS = {
+const DEFAULT_PORTS = {
   ftp: 21,
   gopher: 70,
   http: 80,
   https: 443,
   ws: 80,
   wss: 443,
-};
-
-let stringEndsWith = String.prototype.endsWith || function(s) {
-  return s.length <= this.length &&
-    this.indexOf(s, this.length - s.length) !== -1;
 };
 
 /**
@@ -141,7 +134,7 @@ function shouldProxy(hostname, port, overrideNoProxy, additionalNoProxy) {
       parsedProxyHostname = parsedProxyHostname.slice(1);
     }
     // Stop proxying if the hostname ends with the no_proxy host.
-    return !stringEndsWith.call(hostname, parsedProxyHostname);
+    return !hostname.endsWith(parsedProxyHostname);
   });
 }
 
