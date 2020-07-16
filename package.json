@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint *.js",
-    "test": "mocha ./test.js --reporter spec",
-    "test-coverage": "istanbul cover ./node_modules/.bin/_mocha -- --reporter spec"
+    "test": "mocha ./test.js",
+    "test-coverage": "nyc npm test",
+    "test-coverage-report": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,7 @@
   "devDependencies": {
     "coveralls": "^3.1.0",
     "eslint": "^7.4.0",
-    "istanbul": "^0.4.5",
-    "mocha": "^8.0.1"
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0"
   }
 }
