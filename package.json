@@ -27,8 +27,8 @@
   "homepage": "https://github.com/Rob--W/proxy-from-env#readme",
   "devDependencies": {
     "coveralls": "^3.0.9",
-    "eslint": "^6.8.0",
+    "eslint": "^7.4.0",
     "istanbul": "^0.4.5",
-    "mocha": "^7.1.0"
+    "mocha": "^8.0.1"
   }
 }
