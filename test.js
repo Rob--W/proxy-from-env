@@ -518,5 +518,25 @@ describe('getProxyForUrl', function() {
       testProxyUrl(env, '', 'http://otherwebsite', options);
       testProxyUrl(env, '', 'http://mysite', options);
     });
+    // eslint-disable-next-line max-len
+    describe('programmatic additional NO_PROXY lists with wildcard', function () {
+      let env = {};
+      let options = {
+        overrideNoProxy: false,
+        additionalNoProxy: [
+          'mysite',
+          '*'
+        ]
+      };
+      env.HTTP_PROXY = 'http://proxy';
+      env.NO_PROXY = 'otherwebsite';
+      // eslint-disable-next-line camelcase
+      env.npm_config_no_proxy = 'example';
+
+      testProxyUrl(env, '', 'http://example', options);
+      testProxyUrl(env, '', 'http://otherwebsite', options);
+      testProxyUrl(env, '', 'http://mysite', options);
+      testProxyUrl(env, '', 'http://someanothersite', options);
+    });
   });
 });
