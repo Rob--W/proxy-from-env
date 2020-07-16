@@ -91,6 +91,36 @@ Matching follows the following rules:
 
 See `test.js` for examples of what should match and what does not.
 
+#### Multiple NO_PROXY lists
+
+By default this module overrides NO_PROXY lists in following order:
+
+- `npm_config_no_proxy`
+- `no_proxy`
+
+This behavior can be changed to merging mode via additional options:
+
+```javascript
+getProxyForUrl(some_url, {
+  overrideNoProxy: false, // This will merge lists instead of overriding
+});
+```
+
+Also you can pass additional lists to check programmatic:
+
+```javascript
+getProxyForUrl(some_url, {
+  additionalNoProxy: 'mydomain',
+});
+// or
+getProxyForUrl(some_url, {
+  additionalNoProxy: [
+    'mydomain1,mydomain2',
+    process.env.MY_OWN_NO_PROXY_ENV_VAR
+  ],
+});
+```
+
 ### \*\_PROXY
 
 The environment variable used for the proxy depends on the protocol of the URL.
