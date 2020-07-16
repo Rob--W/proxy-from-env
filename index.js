@@ -1,8 +1,8 @@
 'use strict';
 
-var parseUrl = require('url').parse;
+let parseUrl = require('url').parse;
 
-var DEFAULT_PORTS = {
+let DEFAULT_PORTS = {
   ftp: 21,
   gopher: 70,
   http: 80,
@@ -11,21 +11,29 @@ var DEFAULT_PORTS = {
   wss: 443,
 };
 
-var stringEndsWith = String.prototype.endsWith || function(s) {
+let stringEndsWith = String.prototype.endsWith || function(s) {
   return s.length <= this.length &&
     this.indexOf(s, this.length - s.length) !== -1;
 };
 
 /**
  * @param {string|object} url - The URL, or the result from url.parse.
+ * @param {object} options - Additional options.
+ * @param {boolean} [options.overrideNoProxy=true] - Whatever to override NO_PROXY lists or combine them.
+ * @param {string|string[]} [options.additionalNoProxy=[]] - Additional custom NO_PROXY lists.
  * @return {string} The URL of the proxy that should handle the request to the
  *  given URL. If no proxy is set, this will be an empty string.
  */
-function getProxyForUrl(url) {
-  var parsedUrl = typeof url === 'string' ? parseUrl(url) : url || {};
-  var proto = parsedUrl.protocol;
-  var hostname = parsedUrl.host;
-  var port = parsedUrl.port;
+function getProxyForUrl(url, options) {
+  options = Object.assign({
+    overrideNoProxy: true,
+    additionalNoProxy: [],
+  }, options);  // Default values
+
+  let parsedUrl = typeof url === 'string' ? parseUrl(url) : url || {};
+  let proto = parsedUrl.protocol;
+  let hostname = parsedUrl.host;
+  let port = parsedUrl.port;
   if (typeof hostname !== 'string' || !hostname || typeof proto !== 'string') {
     return '';  // Don't proxy URLs without a valid scheme or host.
   }
@@ -35,11 +43,11 @@ function getProxyForUrl(url) {
   // sure that the brackets around IPv6 addresses are kept.
   hostname = hostname.replace(/:\d*$/, '');
   port = parseInt(port) || DEFAULT_PORTS[proto] || 0;
-  if (!shouldProxy(hostname, port)) {
+  if (!shouldProxy(hostname, port, options.overrideNoProxy, options.additionalNoProxy)) {
     return '';  // Don't proxy URLs that match NO_PROXY.
   }
 
-  var proxy =
+  let proxy =
     getEnv('npm_config_' + proto + '_proxy') ||
     getEnv(proto + '_proxy') ||
     getEnv('npm_config_proxy') ||
@@ -56,15 +64,51 @@ function getProxyForUrl(url) {
  *
  * @param {string} hostname - The host name of the URL.
  * @param {number} port - The effective port of the URL.
+ * @param {boolean} overrideNoProxy - Override NO_PROXY instead on merging.
+ * @param {string|string[]} additionalNoProxy - Additional NO_PROXY values.
  * @returns {boolean} Whether the given URL should be proxied.
  * @private
  */
-function shouldProxy(hostname, port) {
-  var NO_PROXY =
-    (getEnv('npm_config_no_proxy') || getEnv('no_proxy')).toLowerCase();
+function shouldProxy(hostname, port, overrideNoProxy, additionalNoProxy) {
+  if (typeof additionalNoProxy === 'string') {
+    additionalNoProxy = [
+      additionalNoProxy,
+    ];
+  }
+
+  let defaultNoProxy = [
+    getEnv('npm_config_no_proxy'),
+    getEnv('no_proxy'),
+  ];
+
+  let noProxyList = [
+    ...defaultNoProxy,
+    ...additionalNoProxy,
+  ];
+
+  let NO_PROXY;
+  
+  if (overrideNoProxy) {
+    // Behaviour from 1.1.0
+    NO_PROXY = noProxyList
+      .reduce((a, b) => a || b);
+  } else {
+    // Never proxy if wildcard is set in any of lists.
+    if (noProxyList.indexOf('*') !== -1) {
+      return false;
+    }
+
+    NO_PROXY = noProxyList
+      .filter(item => !!item) // exclude empty items
+      .join(',');
+  }
+
+  NO_PROXY = NO_PROXY.toLowerCase();
+
   if (!NO_PROXY) {
     return true;  // Always proxy if NO_PROXY is not set.
   }
+
   if (NO_PROXY === '*') {
     return false;  // Never proxy if wildcard is set.
   }
@@ -73,9 +117,9 @@ function shouldProxy(hostname, port) {
     if (!proxy) {
       return true;  // Skip zero-length hosts.
     }
-    var parsedProxy = proxy.match(/^(.+):(\d+)$/);
-    var parsedProxyHostname = parsedProxy ? parsedProxy[1] : proxy;
-    var parsedProxyPort = parsedProxy ? parseInt(parsedProxy[2]) : 0;
+    let parsedProxy = proxy.match(/^(.+):(\d+)$/);
+    let parsedProxyHostname = parsedProxy ? parsedProxy[1] : proxy;
+    let parsedProxyPort = parsedProxy ? parseInt(parsedProxy[2]) : 0;
     if (parsedProxyPort && parsedProxyPort !== port) {
       return true;  // Skip if ports don't match.
     }
@@ -95,10 +139,10 @@ function shouldProxy(hostname, port) {
 }
 
 /**
- * Get the value for an environment variable.
+ * Get the value for an environment letiable.
  *
- * @param {string} key - The name of the environment variable.
- * @return {string} The value of the environment variable.
+ * @param {string} key - The name of the environment letiable.
+ * @return {string} The value of the environment letiable.
  * @private
  */
 function getEnv(key) {
