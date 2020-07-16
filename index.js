@@ -19,8 +19,10 @@ let stringEndsWith = String.prototype.endsWith || function(s) {
 /**
  * @param {string|object} url - The URL, or the result from url.parse.
  * @param {object} options - Additional options.
- * @param {boolean} [options.overrideNoProxy=true] - Whatever to override NO_PROXY lists or combine them.
- * @param {string|string[]} [options.additionalNoProxy=[]] - Additional custom NO_PROXY lists.
+ * @param {boolean} [options.overrideNoProxy=true] - Whatever
+ *  to override NO_PROXY lists or combine them.
+ * @param {string|string[]} [options.additionalNoProxy=[]] - Additional
+ *  custom NO_PROXY lists.
  * @return {string} The URL of the proxy that should handle the request to the
  *  given URL. If no proxy is set, this will be an empty string.
  */
@@ -43,7 +45,12 @@ function getProxyForUrl(url, options) {
   // sure that the brackets around IPv6 addresses are kept.
   hostname = hostname.replace(/:\d*$/, '');
   port = parseInt(port) || DEFAULT_PORTS[proto] || 0;
-  if (!shouldProxy(hostname, port, options.overrideNoProxy, options.additionalNoProxy)) {
+  if (!shouldProxy(
+    hostname,
+    port,
+    options.overrideNoProxy,
+    options.additionalNoProxy
+  )) {
     return '';  // Don't proxy URLs that match NO_PROXY.
   }
 
@@ -87,7 +94,7 @@ function shouldProxy(hostname, port, overrideNoProxy, additionalNoProxy) {
   ];
 
   let NO_PROXY;
-  
+
   if (overrideNoProxy) {
     // Behaviour from 1.1.0
     NO_PROXY = noProxyList
