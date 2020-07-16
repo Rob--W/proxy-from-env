@@ -1,0 +1,11 @@
+# Code coverage
+.nyc_output
+coverage/
+
+# Tests
+test.js
+
+# Development configs and utils
+**/.*ignore
+**/.*rc*
+**/.*.yml
