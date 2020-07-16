@@ -17,14 +17,14 @@ function runWithEnv(env, callback) {
   }
 }
 
-// Defines a test case that checks whether getProxyForUrl(input) === expected.
-function testProxyUrl(env, expected, input) {
+// Defines a test case that checks whether getProxyForUrl(input, options) === expected.
+function testProxyUrl(env, expected, input, options) {
   assert(typeof env === 'object' && env !== null);
   // Copy object to make sure that the in param does not get modified between
   // the call of this function and the use of it below.
   env = JSON.parse(JSON.stringify(env));
 
-  var title = 'getProxyForUrl(' + JSON.stringify(input) + ')' +
+  var title = 'getProxyForUrl(' + JSON.stringify(input) + ', ' + JSON.stringify(options) + ')' +
      ' === ' + JSON.stringify(expected);
 
   // Save call stack for later use.
@@ -38,7 +38,7 @@ function testProxyUrl(env, expected, input) {
   it(title, function() {
     var actual;
     runWithEnv(env, function() {
-      actual = getProxyForUrl(input);
+      actual = getProxyForUrl(input, options);
     });
     if (expected === actual) {
       return;  // Good!
@@ -478,6 +478,40 @@ describe('getProxyForUrl', function() {
 
       testProxyUrl(env, '', 'http://example');
       testProxyUrl(env, 'http://proxy', 'http://otherwebsite');
+    });
+  });
+  // eslint-disable-next-line max-len
+  describe('additional options', function() {
+    // eslint-disable-next-line max-len
+    describe('concat NO_PROXY lists instead of overriding', function() {
+      let env = {};
+      let options = {
+        overrideNoProxy: false, 
+      };
+      env.HTTP_PROXY = 'http://proxy';
+      env.NO_PROXY = 'otherwebsite';
+      // eslint-disable-next-line camelcase
+      env.npm_config_no_proxy = 'example';
+
+      testProxyUrl(env, '', 'http://example', options);
+      testProxyUrl(env, '', 'http://otherwebsite', options);
+
+    });
+    // eslint-disable-next-line max-len
+    describe('programmatic additional NO_PROXY lists', function () {
+      let env = {};
+      let options = {
+        overrideNoProxy: false,
+        additionalNoProxy: 'mysite',
+      };
+      env.HTTP_PROXY = 'http://proxy';
+      env.NO_PROXY = 'otherwebsite';
+      // eslint-disable-next-line camelcase
+      env.npm_config_no_proxy = 'example';
+
+      testProxyUrl(env, '', 'http://example', options);
+      testProxyUrl(env, '', 'http://otherwebsite', options);
+      testProxyUrl(env, '', 'http://mysite', options);
     });
   });
 });
