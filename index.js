@@ -1,7 +1,5 @@
 'use strict';
 
-var parseUrl = require('url').parse;
-
 var DEFAULT_PORTS = {
   ftp: 21,
   gopher: 70,
@@ -17,12 +15,18 @@ var stringEndsWith = String.prototype.endsWith || function(s) {
 };
 
 /**
- * @param {string|object} url - The URL, or the result from url.parse.
+ * @param {string|URL} url - The URL, as a string or as URL object.
  * @return {string} The URL of the proxy that should handle the request to the
  *  given URL. If no proxy is set, this will be an empty string.
  */
 function getProxyForUrl(url) {
-  var parsedUrl = typeof url === 'string' ? parseUrl(url) : url || {};
+  var parsedUrl = url || {};
+  try {
+    if (typeof url === 'string')
+      parsedUrl = new URL(url);
+  } catch (err) {
+    return '';
+  }
   var proto = parsedUrl.protocol;
   var hostname = parsedUrl.host;
   var port = parsedUrl.port;
