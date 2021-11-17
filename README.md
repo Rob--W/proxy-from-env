@@ -24,7 +24,6 @@ This example shows how the data for a URL can be fetched via the
 
 ```javascript
 var http = require('http');
-var parseUrl = require('url').parse;
 var getProxyForUrl = require('proxy-from-env').getProxyForUrl;
 // ^ or: import { getProxyForUrl } from 'proxy-from-env';
 
@@ -41,8 +40,8 @@ var some_url = 'http://example.com/something';
 var proxy_url = getProxyForUrl(some_url);  // <-- Our magic.
 if (proxy_url) {
   // Should be proxied through proxy_url.
-  var parsed_some_url = parseUrl(some_url);
-  var parsed_proxy_url = parseUrl(proxy_url);
+  var parsed_some_url = new URL(some_url);
+  var parsed_proxy_url = new URL(proxy_url);
   // A HTTP proxy is quite simple. It is similar to a normal request, except the
   // path is an absolute URL, and the proxied URL's host is put in the header
   // instead of the server's actual host.

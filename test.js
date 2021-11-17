@@ -3,7 +3,6 @@
 
 import {describe, it} from 'node:test';
 import assert from 'node:assert';
-import {parse as parseUrl} from 'node:url';
 
 import {getProxyForUrl} from 'proxy-from-env';
 
@@ -132,7 +131,7 @@ describe('getProxyForUrl', function() {
 
     testProxyUrl(env, '', 'https://example');
     testProxyUrl(env, 'http://http-proxy', 'http://example');
-    testProxyUrl(env, 'http://http-proxy', parseUrl('http://example'));
+    testProxyUrl(env, 'http://http-proxy', new URL('http://example'));
 
     // eslint-disable-next-line camelcase
     env.http_proxy = 'http://priority';
