@@ -106,3 +106,4 @@ function getEnv(key) {
 }
 
 exports.getProxyForUrl = getProxyForUrl;
+exports.shouldProxy = shouldProxy;
