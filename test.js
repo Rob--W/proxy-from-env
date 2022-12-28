@@ -479,5 +479,18 @@ describe('getProxyForUrl', function() {
       testProxyUrl(env, '', 'http://example');
       testProxyUrl(env, 'http://proxy', 'http://otherwebsite');
     });
+    // eslint-disable-next-line max-len
+    describe('npm_config_noproxy should take precedence over npm_config_no_proxy and NO_PROXY', function() {
+      var env = {};
+      env.HTTP_PROXY = 'http://proxy';
+      env.NO_PROXY = 'otherwebsite';
+      // eslint-disable-next-line camelcase
+      env.npm_config_no_proxy = 'anotherexample';
+      // eslint-disable-next-line camelcase
+      env.npm_config_noproxy = 'example';
+      testProxyUrl(env, '', 'http://example');
+      testProxyUrl(env, 'http://proxy', 'http://anotherexample');
+      testProxyUrl(env, 'http://proxy', 'http://otherwebsite');
+    });
   });
 });

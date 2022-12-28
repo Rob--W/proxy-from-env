@@ -60,7 +60,7 @@ function getProxyForUrl(url) {
  * @private
  */
 function shouldProxy(hostname, port) {
-  var NO_PROXY =
+  var NO_PROXY = getEnv('npm_config_noproxy') || 
     (getEnv('npm_config_no_proxy') || getEnv('no_proxy')).toLowerCase();
   if (!NO_PROXY) {
     return true;  // Always proxy if NO_PROXY is not set.
