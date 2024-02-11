@@ -92,6 +92,7 @@ describe('getProxyForUrl', function() {
     testProxyUrl(env, '', 'https://example');
     testProxyUrl(env, 'http://http-proxy', 'http://example');
     testProxyUrl(env, 'http://http-proxy', parseUrl('http://example'));
+    testProxyUrl(env, 'http://http-proxy', new URL('http://example'));
 
     // eslint-disable-next-line camelcase
     env.http_proxy = 'http://priority';
