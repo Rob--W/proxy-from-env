@@ -1,6 +1,7 @@
 'use strict';
 
 var parseUrl = require('url').parse;
+var spawnSync = require('child_process').spawnSync;
 
 var DEFAULT_PORTS = {
   ftp: 21,
@@ -30,6 +31,11 @@ function getProxyForUrl(url) {
     return '';  // Don't proxy URLs without a valid scheme or host.
   }
 
+  var proxySelector = getEnv('proxy_selector');
+  if (proxySelector) {
+    return proxyFromSelector(url);
+  }
+
   proto = proto.split(':', 1)[0];
   // Stripping ports in this way instead of using parsedUrl.hostname to make
   // sure that the brackets around IPv6 addresses are kept.
@@ -49,6 +55,39 @@ function getProxyForUrl(url) {
     proxy = proto + '://' + proxy;
   }
   return proxy;
+}
+
+/**
+ * Determines whether a given URL should be proxied,
+ * by staring a helper process
+ *
+ * @param {string} url - The URL to test
+ * @returns {string} A comma separated list of URLs in the *_PROXY variable
+ *                   format, e.g.: "http://proxy.example.com:8080" or
+ *                   if multiple proxies are eligble for the given URL
+ *                   "http://proxy.example.com:8080,http://proxy2.example.com:8080",
+ *                   or an empty string if request should be made direct.
+ * @private
+ */
+function proxyFromSelector(url) {
+  var selector = getEnv('proxy_selector');
+  var p = spawnSync(selector, [url]);
+  if (p.error) {
+    return '';
+  }
+  var proxies;
+  if (typeof p.stdout === 'string') {
+    proxies = p.stdout.split('\n');
+  } else {
+    proxies = p.stdout.toString().split('\n');
+  }
+  if (proxies) {
+    return proxies.filter(function(p) {
+      return p !== '';
+      }).join(',');
+  }
+
+  return '';
 }
 
 /**

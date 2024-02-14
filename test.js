@@ -388,6 +388,19 @@ describe('getProxyForUrl', function() {
     testProxyUrl(env, '', 'http://zZz');
   });
 
+  describe('use proxy_selector', function() {
+    var env = {};
+    env.PROXY_SELECTOR = 'proxy-for-gh.sh';
+    env.PATH = '.';
+
+    testProxyUrl(env, '', 'http://xxx');
+    testProxyUrl(env, '', 'http://XXX');
+    testProxyUrl(env, '', 'http://yyy');
+    testProxyUrl(env, 'http://proxy.example.com:8080', 'http://gh.example.com');
+    testProxyUrl(env, '', 'http://ZzZ');
+    testProxyUrl(env, '', 'http://zZz');
+  });
+
   describe('NPM proxy configuration', function() {
     describe('npm_config_http_proxy should work', function() {
       var env = {};
