@@ -17,7 +17,7 @@ var stringEndsWith = String.prototype.endsWith || function(s) {
 };
 
 /**
- * @param {string|import('node:url').Url|URL} url - The URL, or the result from url.parse.
+ * @param {string|url.Url|URL} url - The URL, or the result from url.parse.
  * @return {string} The URL of the proxy that should handle the request to the
  *  given URL. If no proxy is set, this will be an empty string.
  */
