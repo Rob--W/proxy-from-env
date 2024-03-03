@@ -1,0 +1,92 @@
+on: [ push, pull_request ]
+
+name: Tests
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+    - run: npm install # install eslint
+    - run: npm run lint
+
+  test-old-node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [ 6.4.0 ]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node_version }}
+
+    # Note: no npm ci / npm install:
+    # The package has no non-dev dependencies.
+    # Old Node.js does not have built-in coverage reporting, so we use external packages.
+    # - run: npm install coveralls@3.1.1 # TODO: can be removed? Not needed with github action?
+    - run: npm install istanbul@0.4.5
+    # 6.2.0 is supposedly compatible with v6, but fails to install.
+    # So we use a (working) version referenced by proxy-from-env@1.0.0
+    - run: npm install mocha@2.4.5
+
+    # test-coverage will also run the tests, but does not print helpful output upon test failure.
+    # So we also run the tests separately.
+    - run: ./node_modules/.bin/mocha ./test.js --reporter spec
+    # ^ instead of: npm test
+
+    - run: ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --reporter spec # creates coverage/lcov.info
+    # ^ instead of: npm run test-coverage
+
+    - name: Send coverage for Node ${{ matrix.node_version }} to Coveralls
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel: true
+        file: coverage/lcov.info
+        flag-name: coverage-node-${{ matrix.node_version }}
+
+  test-recent-node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [ 20 ]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node_version }}
+
+    # Note: no npm ci / npm install:
+    # The package has no non-dev dependencies.
+    # We rely on Node.js's built-in test module and reporter,
+    # and do not require any dev dependencies either.
+
+    # test-coverage will also run the tests, but does not print helpful output upon test failure.
+    # So we also run the tests separately.
+    - run: npm test
+
+    # note: --experimental-test-coverage requires Node v18.15.0+
+    # note: --test-reporter=lcov requires Node v20.11.0+ (https://github.com/nodejs/node/pull/50018)
+    - run: npm run test-coverage
+
+    - name: Send coverage for Node ${{ matrix.node_version }} to Coveralls
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel: true
+        file: lcov.info
+        flag-name: coverage-node-${{ matrix.node_version }}
+
+  coveralls:
+    name: Report to Coveralls
+    needs: [ test-old-node, test-recent-node ]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
