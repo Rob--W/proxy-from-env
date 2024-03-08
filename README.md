@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Rob--W/proxy-from-env/badge.svg?branch=master)](https://coveralls.io/github/Rob--W/proxy-from-env?branch=master)
 
 `proxy-from-env` is a Node.js package that exports a function (`getProxyForUrl`)
-that takes an input URL (a string or
+that takes an input URL (a string, a `URL` instance, or
 [`url.parse`](https://nodejs.org/docs/latest/api/url.html#url_url_parsing)'s
 return value) and returns the desired proxy URL (also a string) based on
 standard proxy environment variables. If no proxy is set, an empty string is
