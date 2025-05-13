@@ -40,9 +40,7 @@ function getProxyForUrl(url) {
   }
 
   var proxy =
-    getEnv('npm_config_' + proto + '_proxy') ||
     getEnv(proto + '_proxy') ||
-    getEnv('npm_config_proxy') ||
     getEnv('all_proxy');
   if (proxy && proxy.indexOf('://') === -1) {
     // Missing scheme in proxy, default to the requested URL's scheme.
@@ -61,7 +59,7 @@ function getProxyForUrl(url) {
  */
 function shouldProxy(hostname, port) {
   var NO_PROXY =
-    (getEnv('npm_config_no_proxy') || getEnv('no_proxy')).toLowerCase();
+    getEnv('no_proxy').toLowerCase();
   if (!NO_PROXY) {
     return true;  // Always proxy if NO_PROXY is not set.
   }
