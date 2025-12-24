@@ -1,6 +1,15 @@
 'use strict';
 
-var parseUrl = require('url').parse;
+// Use WHATWG URL API instead of deprecated url.parse()
+function parseUrl(urlString) {
+  try {
+    // WHATWG URL API is available in Node.js v7.0.0+
+    return new URL(urlString);
+  } catch (error) {
+    // Return empty object for invalid URLs (matching url.parse behavior)
+    return {};
+  }
+}
 
 var DEFAULT_PORTS = {
   ftp: 21,
