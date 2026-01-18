@@ -11,14 +11,6 @@ jobs:
     - run: npm install # install eslint
     - run: npm run lint
 
-  test-old-node:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: [ 6.4.0 ]
-    steps:
-    - uses: actions/checkout@v4
-
     - name: Use Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v4
       with:
@@ -49,11 +41,11 @@ jobs:
         file: coverage/lcov.info
         flag-name: coverage-node-${{ matrix.node_version }}
 
-  test-recent-node:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [ 20 ]
+        node_version: [ 20, 22, 24 ]
     steps:
     - uses: actions/checkout@v4
 
@@ -84,7 +76,7 @@ jobs:
 
   coveralls:
     name: Report to Coveralls
-    needs: [ test-old-node, test-recent-node ]
+    needs: [ test ]
     if: github.repository == 'Rob--W/proxy-from-env'
     runs-on: ubuntu-latest
     steps:
