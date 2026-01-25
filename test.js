@@ -1,12 +1,8 @@
 /* eslint max-statements:0 */
 'use strict';
 
-// For compatibility with old Node that
-// The node:test modules is only supported in Node v16.17.0+.
-// To run in earlier versions, run this file through mocha instead,
-// e.g. mocha ./test.js --reporter spec
-var describe = global.describe || require('node:test').describe;
-var it = global.it || require('node:test').it;
+var describe = require('node:test').describe;
+var it = require('node:test').it;
 
 var assert = require('assert');
 var parseUrl = require('url').parse;

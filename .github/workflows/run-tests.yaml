@@ -11,45 +11,7 @@ jobs:
     - run: npm install # install eslint
     - run: npm run lint
 
-  test-old-node:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: [ 6.4.0 ]
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Use Node.js ${{ matrix.node_version }}
-      uses: actions/setup-node@v6
-      with:
-        node-version: ${{ matrix.node_version }}
-
-    # Note: no npm ci / npm install:
-    # The package has no non-dev dependencies.
-    # Old Node.js does not have built-in coverage reporting, so we use external packages.
-    # - run: npm install coveralls@3.1.1 # TODO: can be removed? Not needed with github action?
-    - run: npm install istanbul@0.4.5
-    # 6.2.0 is supposedly compatible with v6, but fails to install.
-    # So we use a (working) version referenced by proxy-from-env@1.0.0
-    - run: npm install mocha@2.4.5
-
-    # test-coverage will also run the tests, but does not print helpful output upon test failure.
-    # So we also run the tests separately.
-    - run: ./node_modules/.bin/mocha ./test.js --reporter spec
-    # ^ instead of: npm test
-
-    - run: ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --reporter spec # creates coverage/lcov.info
-    # ^ instead of: npm run test-coverage
-
-    - name: Send coverage for Node ${{ matrix.node_version }} to Coveralls
-      if: ${{ github.repository == 'Rob--W/proxy-from-env' }}
-      uses: coverallsapp/github-action@v2
-      with:
-        parallel: true
-        file: coverage/lcov.info
-        flag-name: coverage-node-${{ matrix.node_version }}
-
-  test-recent-node:
+  test-node:
     runs-on: ubuntu-latest
     strategy:
       matrix:
