@@ -42,6 +42,7 @@ jobs:
     # ^ instead of: npm run test-coverage
 
     - name: Send coverage for Node ${{ matrix.node_version }} to Coveralls
+      if: ${{ github.repository == 'Rob--W/proxy-from-env' }}
       uses: coverallsapp/github-action@v2
       with:
         parallel: true
@@ -84,7 +85,7 @@ jobs:
   coveralls:
     name: Report to Coveralls
     needs: [ test-old-node, test-recent-node ]
-    if: ${{ always() }}
+    if: ${{ github.repository == 'Rob--W/proxy-from-env' }}
     runs-on: ubuntu-latest
     steps:
     - uses: coverallsapp/github-action@v2
