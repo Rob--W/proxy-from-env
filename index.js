@@ -11,11 +11,6 @@ var DEFAULT_PORTS = {
   wss: 443,
 };
 
-var stringEndsWith = String.prototype.endsWith || function(s) {
-  return s.length <= this.length &&
-    this.indexOf(s, this.length - s.length) !== -1;
-};
-
 /**
  * @param {string|object} url - The URL, or the result from url.parse.
  * @return {string} The URL of the proxy that should handle the request to the
@@ -90,7 +85,7 @@ function shouldProxy(hostname, port) {
       parsedProxyHostname = parsedProxyHostname.slice(1);
     }
     // Stop proxying if the hostname ends with the no_proxy host.
-    return !stringEndsWith.call(hostname, parsedProxyHostname);
+    return !hostname.endsWith(parsedProxyHostname);
   });
 }
 
