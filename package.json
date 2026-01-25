@@ -7,7 +7,7 @@
     "lint": "eslint *.js",
     "test": "node --test ./test.js",
     "test-coverage": "node --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info ./test.js",
-    "test-coverage-as-html": "npm run test-gen-lcov && genhtml lcov.info -o coverage/"
+    "test-coverage-as-html": "npm run test-coverage && genhtml lcov.info -o coverage/"
   },
   "repository": {
     "type": "git",
