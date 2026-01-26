@@ -15,7 +15,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [ 20 ]
+        node_version:
+          # The oldest Node.js version that we can still test.
+          # Node v20.11.0+ required for --test-reporter=lcov (test-coverage)
+          # Node v20.19.0 required for require(esm) require("proxy-from-env")
+          - 20
+          # Other Node.js versions that have not reached End-of-life status per
+          # https://nodejs.org/en/about/previous-releases
+          - 24
+          - 22
+          - 25
+          # ^ latest version may be an unstable (odd) version when the latest
+          # (even) version is not yet available.
     steps:
     - uses: actions/checkout@v6
 
@@ -46,7 +57,7 @@ jobs:
 
   coveralls:
     name: Report to Coveralls
-    needs: [ test-old-node, test-recent-node ]
+    needs: [ test-node ]
     if: ${{ github.repository == 'Rob--W/proxy-from-env' }}
     runs-on: ubuntu-latest
     steps:
