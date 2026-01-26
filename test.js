@@ -84,6 +84,46 @@ describe('getProxyForUrl', function() {
     testProxyUrl(env, '', {});
     testProxyUrl(env, '', {host: 'x', protocol: 1});
     testProxyUrl(env, '', {host: 1, protocol: 'x'});
+
+    describe('difference between url.parse and WHATWG URL', function() {
+      // Node 24 and later raise the following warning when url.parse is used:
+      //
+      // (node:11623) [DEP0169] DeprecationWarning: `url.parse()` behavior is
+      // not standardized and prone to errors that have security implications.
+      // Use the WHATWG URL API instead. CVEs are not issued for `url.parse()`
+      // vulnerabilities.
+      //
+      // The above refers to https://hackerone.com/reports/678487 which shows
+      // that a bare percentage sign is parsed inconsistently:
+      // - `url.parse` splits hosts.
+      // - WHATWG `URL` constructor raised an error.
+      //
+      // This test case shows the difference.
+      //
+      // For comparison:
+      // - curl (8.17.0) refuses to connect:
+      //   $ http_proxy=http://localhost:1337 curl http://bad%
+      //   curl:(3) URL rejected: Bad hostname
+      // - wget (GNU wget 1.25.0) passes "bad%" as Host header:
+      //   $ http_proxy=http://localhost:1337 wget http://bad%
+      //   (nc -l 1337 receives request with "bad% as Host header)
+      // - Python (3.13.11) passes "bad%" as Host header:
+      //   $ http_proxy=http://localhost:1337 python3 -c \
+      //       'import urllib.request;urllib.request.urlopen("http://bad%")'
+      //   (nc -l 1337 receives request with "bad% as Host header)
+
+      // A canonical URL does not have a single "%".
+      var badUrl = 'http://bad%';
+
+      // proxy-from-env@1.1.0 and earlier accepted bad URLs:
+      testProxyUrl(env, 'http://unexpected.proxy', parseUrl(badUrl));
+
+      // Sanity check: WHATWG URL constructor rejects badUrl.
+      assert(!URL.canParse(badUrl));
+
+      // Verify current proxy-from-env behavior. Currently same as 1.1.0:
+      testProxyUrl(env, 'http://unexpected.proxy', badUrl);
+    });
   });
 
   describe('http_proxy and HTTP_PROXY', function() {
