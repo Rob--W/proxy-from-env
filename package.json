@@ -4,7 +4,7 @@
   "description": "Offers getProxyForUrl to get the proxy URL for a URL, respecting the *_PROXY (e.g. HTTP_PROXY) and NO_PROXY environment variables.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint *.js",
+    "lint": "eslint *.js *.mjs",
     "test": "node --test ./test.js",
     "test-coverage": "node --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info ./test.js",
     "test-coverage-as-html": "npm run test-coverage && genhtml lcov.info -o coverage/"
@@ -27,6 +27,6 @@
   },
   "homepage": "https://github.com/Rob--W/proxy-from-env#readme",
   "devDependencies": {
-    "eslint": "^6.8.0"
+    "eslint": "^9.39.2"
   }
 }
