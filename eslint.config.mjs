@@ -36,9 +36,7 @@ export default defineConfig([
     languageOptions: {
       globals: {
         // Minimum set of globals, supported in Node.
-        exports: 'readonly',
         process: 'readonly',
-        require: 'readonly'
       }
     },
     rules,
@@ -49,7 +47,6 @@ export default defineConfig([
       globals: {
         // Minimum set of globals, supported in Node.
         process: 'readonly',
-        require: 'readonly'
       }
     },
     rules,

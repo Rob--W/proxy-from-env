@@ -1,6 +1,6 @@
 'use strict';
 
-var parseUrl = require('url').parse;
+import {parse as parseUrl} from 'node:url';
 
 var DEFAULT_PORTS = {
   ftp: 21,
@@ -16,7 +16,7 @@ var DEFAULT_PORTS = {
  * @return {string} The URL of the proxy that should handle the request to the
  *  given URL. If no proxy is set, this will be an empty string.
  */
-function getProxyForUrl(url) {
+export function getProxyForUrl(url) {
   var parsedUrl = typeof url === 'string' ? parseUrl(url) : url || {};
   var proto = parsedUrl.protocol;
   var hostname = parsedUrl.host;
@@ -99,5 +99,3 @@ function shouldProxy(hostname, port) {
 function getEnv(key) {
   return process.env[key.toLowerCase()] || process.env[key.toUpperCase()] || '';
 }
-
-exports.getProxyForUrl = getProxyForUrl;

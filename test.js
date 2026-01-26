@@ -1,13 +1,11 @@
 /* eslint max-statements:0 */
 'use strict';
 
-var describe = require('node:test').describe;
-var it = require('node:test').it;
+import {describe, it} from 'node:test';
+import assert from 'node:assert';
+import {parse as parseUrl} from 'node:url';
 
-var assert = require('assert');
-var parseUrl = require('url').parse;
-
-var getProxyForUrl = require('./').getProxyForUrl;
+import {getProxyForUrl} from 'proxy-from-env';
 
 // Runs the callback with process.env temporarily set to env.
 function runWithEnv(env, callback) {

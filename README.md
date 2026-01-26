@@ -26,6 +26,7 @@ This example shows how the data for a URL can be fetched via the
 var http = require('http');
 var parseUrl = require('url').parse;
 var getProxyForUrl = require('proxy-from-env').getProxyForUrl;
+// ^ or: import { getProxyForUrl } from 'proxy-from-env';
 
 var some_url = 'http://example.com/something';
 
