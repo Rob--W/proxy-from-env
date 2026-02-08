@@ -28,31 +28,12 @@ function testProxyUrl(env, expected, input) {
   var title = 'getProxyForUrl(' + JSON.stringify(input) + ')' +
      ' === ' + JSON.stringify(expected);
 
-  // Save call stack for later use.
-  var stack = {};
-  Error.captureStackTrace(stack, testProxyUrl);
-  // Only use the last stack frame because that shows where this function is
-  // called, and that is sufficient for our purpose. No need to flood the logs
-  // with an uninteresting stack trace.
-  stack = stack.stack.split('\n', 2)[1];
-
   it(title, function() {
     var actual;
     runWithEnv(env, function() {
       actual = getProxyForUrl(input);
     });
-    if (expected === actual) {
-      return;  // Good!
-    }
-    try {
-      assert.strictEqual(expected, actual); // Create a formatted error message.
-      // Should not happen because previously we determined expected !== actual.
-      throw new Error('assert.strictEqual passed. This is impossible!');
-    } catch (e) {
-      // Use the original stack trace, so we can see a helpful line number.
-      e.stack = e.message + stack;
-      throw e;
-    }
+    assert.strictEqual(actual, expected);
   });
 }
 
