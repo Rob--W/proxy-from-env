@@ -30,5 +30,6 @@
   "devDependencies": {
     "eslint": "^9.39.2"
   },
-  "type": "module"
+  "type": "module",
+  "sideEffects": false
 }
