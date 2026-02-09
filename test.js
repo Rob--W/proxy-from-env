@@ -60,6 +60,7 @@ describe('getProxyForUrl', function() {
     testProxyUrl(env, '', 'prototype://');
     testProxyUrl(env, '', 'hasOwnProperty://');
     testProxyUrl(env, '', '__proto__://');
+    testProxyUrl(env, '', 'http://abc\x00/');
     testProxyUrl(env, '', undefined);
     testProxyUrl(env, '', null);
     testProxyUrl(env, '', {});
@@ -102,8 +103,8 @@ describe('getProxyForUrl', function() {
       // Sanity check: WHATWG URL constructor rejects badUrl.
       assert(!URL.canParse(badUrl));
 
-      // Verify current proxy-from-env behavior. Currently same as 1.1.0:
-      testProxyUrl(env, 'http://unexpected.proxy', badUrl);
+      // Verify current proxy-from-env behavior. Should reject without throwing.
+      testProxyUrl(env, '', badUrl);
     });
   });
 

@@ -1,7 +1,5 @@
 'use strict';
 
-import {parse as parseUrl} from 'node:url';
-
 var DEFAULT_PORTS = {
   ftp: 21,
   gopher: 70,
@@ -11,13 +9,22 @@ var DEFAULT_PORTS = {
   wss: 443,
 };
 
+function parseUrl(urlString) {
+  try {
+    return new URL(urlString);
+  } catch {
+    return null;
+  }
+}
+
 /**
- * @param {string|object} url - The URL, or the result from url.parse.
+ * @param {string|object|URL} url - The URL as a string or URL instance, or a
+ *   compatible object (such as the result from legacy url.parse).
  * @return {string} The URL of the proxy that should handle the request to the
  *  given URL. If no proxy is set, this will be an empty string.
  */
 export function getProxyForUrl(url) {
-  var parsedUrl = typeof url === 'string' ? parseUrl(url) : url || {};
+  var parsedUrl = (typeof url === 'string' ? parseUrl(url) : url) || {};
   var proto = parsedUrl.protocol;
   var hostname = parsedUrl.host;
   var port = parsedUrl.port;
