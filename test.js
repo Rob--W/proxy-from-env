@@ -410,96 +410,22 @@ describe('getProxyForUrl', function() {
     testProxyUrl(env, '', 'http://zZz');
   });
 
+  // Up until proxy-from-env@1.1.0, proxy-from-env had undocumented support for
+  // specifying proxies through npm_config_ prefixes. The historical reasons
+  // for them are no longer relevant:
+  // https://github.com/Rob--W/proxy-from-env/issues/13#issuecomment-3150256653
   describe('NPM proxy configuration', function() {
-    describe('npm_config_http_proxy should work', function() {
-      var env = {};
-      // eslint-disable-next-line camelcase
-      env.npm_config_http_proxy = 'http://http-proxy';
-
-      testProxyUrl(env, '', 'https://example');
-      testProxyUrl(env, 'http://http-proxy', 'http://example');
-
-      // eslint-disable-next-line camelcase
-      env.npm_config_http_proxy = 'http://priority';
-      testProxyUrl(env, 'http://priority', 'http://example');
-    });
-    // eslint-disable-next-line max-len
-    describe('npm_config_http_proxy should take precedence over HTTP_PROXY and npm_config_proxy', function() {
+    describe('npm_config_*_proxy variables are unsupported', function() {
       var env = {};
       // eslint-disable-next-line camelcase
       env.npm_config_http_proxy = 'http://http-proxy';
       // eslint-disable-next-line camelcase
-      env.npm_config_proxy = 'http://unexpected-proxy';
-      env.HTTP_PROXY = 'http://unexpected-proxy';
-
-      testProxyUrl(env, 'http://http-proxy', 'http://example');
-    });
-    describe('npm_config_https_proxy should work', function() {
-      var env = {};
+      env.npm_config_https_proxy = 'http://https-proxy';
       // eslint-disable-next-line camelcase
-      env.npm_config_http_proxy = 'http://unexpected.proxy';
+      env.npm_config_proxy = 'http://unexpected-proxy';
+
+      testProxyUrl(env, '', 'http://example');
       testProxyUrl(env, '', 'https://example');
-
-      // eslint-disable-next-line camelcase
-      env.npm_config_https_proxy = 'http://https-proxy';
-      testProxyUrl(env, 'http://https-proxy', 'https://example');
-
-      // eslint-disable-next-line camelcase
-      env.npm_config_https_proxy = 'http://priority';
-      testProxyUrl(env, 'http://priority', 'https://example');
-    });
-    // eslint-disable-next-line max-len
-    describe('npm_config_https_proxy should take precedence over HTTPS_PROXY and npm_config_proxy', function() {
-      var env = {};
-      // eslint-disable-next-line camelcase
-      env.npm_config_https_proxy = 'http://https-proxy';
-      // eslint-disable-next-line camelcase
-      env.npm_config_proxy = 'http://unexpected-proxy';
-      env.HTTPS_PROXY = 'http://unexpected-proxy';
-
-      testProxyUrl(env, 'http://https-proxy', 'https://example');
-    });
-    describe('npm_config_proxy should work', function() {
-      var env = {};
-      // eslint-disable-next-line camelcase
-      env.npm_config_proxy = 'http://http-proxy';
-      testProxyUrl(env, 'http://http-proxy', 'http://example');
-      testProxyUrl(env, 'http://http-proxy', 'https://example');
-
-      // eslint-disable-next-line camelcase
-      env.npm_config_proxy = 'http://priority';
-      testProxyUrl(env, 'http://priority', 'http://example');
-      testProxyUrl(env, 'http://priority', 'https://example');
-    });
-    // eslint-disable-next-line max-len
-    describe('HTTP_PROXY and HTTPS_PROXY should take precedence over npm_config_proxy', function() {
-      var env = {};
-      env.HTTP_PROXY = 'http://http-proxy';
-      env.HTTPS_PROXY = 'http://https-proxy';
-      // eslint-disable-next-line camelcase
-      env.npm_config_proxy = 'http://unexpected-proxy';
-      testProxyUrl(env, 'http://http-proxy', 'http://example');
-      testProxyUrl(env, 'http://https-proxy', 'https://example');
-    });
-    describe('npm_config_no_proxy should work', function() {
-      var env = {};
-      env.HTTP_PROXY = 'http://proxy';
-      // eslint-disable-next-line camelcase
-      env.npm_config_no_proxy = 'example';
-
-      testProxyUrl(env, '', 'http://example');
-      testProxyUrl(env, 'http://proxy', 'http://otherwebsite');
-    });
-    // eslint-disable-next-line max-len
-    describe('npm_config_no_proxy should take precedence over NO_PROXY', function() {
-      var env = {};
-      env.HTTP_PROXY = 'http://proxy';
-      env.NO_PROXY = 'otherwebsite';
-      // eslint-disable-next-line camelcase
-      env.npm_config_no_proxy = 'example';
-
-      testProxyUrl(env, '', 'http://example');
-      testProxyUrl(env, 'http://proxy', 'http://otherwebsite');
     });
   });
 });
