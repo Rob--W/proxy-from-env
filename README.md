@@ -4,8 +4,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/Rob--W/proxy-from-env/badge.svg?branch=master)](https://coveralls.io/github/Rob--W/proxy-from-env?branch=master)
 
 `proxy-from-env` is a Node.js package that exports a function (`getProxyForUrl`)
-that takes an input URL (a string or
-[`url.parse`](https://nodejs.org/docs/latest/api/url.html#url_url_parsing)'s
+that takes an input URL (a string, an instance of
+[`URL`](https://nodejs.org/docs/latest/api/url.html#the-whatwg-url-api),
+or [`url.parse`](https://nodejs.org/docs/latest/api/url.html#url_url_parsing)'s
 return value) and returns the desired proxy URL (also a string) based on
 standard proxy environment variables. If no proxy is set, an empty string is
 returned.
@@ -22,10 +23,14 @@ npm install proxy-from-env
 This example shows how the data for a URL can be fetched via the
 [`http` module](https://nodejs.org/api/http.html), in a proxy-aware way.
 
+warning: this simple example works for http requests only. To support https,
+you must establish a proxy tunnel via the
+[http `connect` method](https://developer.mozilla.org/en-us/docs/web/http/reference/methods/connect).
+
 ```javascript
-var http = require('http');
-var getProxyForUrl = require('proxy-from-env').getProxyForUrl;
-// ^ or: import { getProxyForUrl } from 'proxy-from-env';
+import http from 'node:test';
+import { getProxyForUrl } from 'proxy-from-env';
+// ^ or: var getProxyForUrl = require('proxy-from-env').getProxyForUrl;
 
 var some_url = 'http://example.com/something';
 
@@ -63,8 +68,26 @@ http.get(httpOptions, function(res) {
   res.on('data', function(chunk) { responses.push(chunk); });
   res.on('end', function() { console.log(responses.join(''));  });
 });
-
 ```
+
+### Full proxy support
+The simple example above works for http requests only. To support https, you
+must establish a proxy tunnel via the
+[http `connect` method](https://developer.mozilla.org/en-us/docs/web/http/reference/methods/connect).
+
+An example of that is shown in the
+[`https-proxy-agent` npm package](https://www.npmjs.com/package/https-proxy-agent).
+The [`proxy-agent` npm package](https://www.npmjs.com/package/proxy-agent)
+combines `https-proxy-agent` and `proxy-from-env` to offer a `http.Agent` that
+supports proxies from environment variables.
+
+### Built-in proxy support
+Node.js is working on built-in support for proxy environment variables,
+currently behind `NODE_USE_ENV_PROXY=1` or `--use-env-proxy`. For details, see:
+
+- https://github.com/nodejs/node/issues/57872
+- https://nodejs.org/api/http.html#built-in-proxy-support
+
 
 ## Environment variables
 The environment variables can be specified in lowercase or uppercase, with the
