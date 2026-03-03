@@ -50,5 +50,27 @@ export default defineConfig([
       }
     },
     rules,
+  },
+  {
+    files: ['index.cjs'],
+    languageOptions: {
+      globals: {
+        // Minimum set of globals, supported in Node.
+        process: 'readonly',
+        exports: 'readonly',
+      }
+    },
+    rules,
+  },
+  {
+    files: ['test-require.cjs'],
+    languageOptions: {
+      globals: {
+        // Minimum set of globals, supported in Node.
+        process: 'readonly',
+        require: 'readonly',
+      }
+    },
+    rules,
   }
 ]);

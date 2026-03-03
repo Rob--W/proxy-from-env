@@ -11,6 +11,27 @@ jobs:
     - run: npm install # install eslint
     - run: npm run lint
 
+  test-old-node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version:
+          # Node 10 is the first version to introduce URL support
+          - 10.0.0
+          # Node 12 supports "exports" package.json key.
+          - 12.22.12
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ matrix.node_version }}
+
+    # Note: we only run the require() tests. Fixing the ESM test requires
+    # more effort (polyfilling missing node:test, and we don't bother).
+    - run: npm run test-require
+
   test-node:
     runs-on: ubuntu-latest
     strategy:
@@ -43,6 +64,9 @@ jobs:
     # test-coverage will also run the tests, but does not print helpful output upon test failure.
     # So we also run the tests separately.
     - run: npm test
+
+    # Sanity check that require() works.
+    - run: npm run test-require
 
     # note: --experimental-test-coverage requires Node v18.15.0+
     # note: --test-reporter=lcov requires Node v20.11.0+ (https://github.com/nodejs/node/pull/50018)
