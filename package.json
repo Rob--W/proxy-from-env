@@ -2,11 +2,16 @@
   "name": "proxy-from-env",
   "version": "2.0.0",
   "description": "Offers getProxyForUrl to get the proxy URL for a URL, respecting the *_PROXY (e.g. HTTP_PROXY) and NO_PROXY environment variables.",
-  "main": "index.js",
-  "exports": "./index.js",
+  "main": "index.cjs",
+  "exports": {
+    "import": "./index.js",
+    "require": "./index.cjs"
+  },
+  "files": ["index.js", "index.cjs"],
   "scripts": {
-    "lint": "eslint *.js *.mjs",
+    "lint": "eslint *.js *.mjs *.cjs",
     "test": "node --test ./test.js",
+    "test-require": "node ./test-require.cjs",
     "test-coverage": "node --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info ./test.js",
     "test-coverage-as-html": "npm run test-coverage && genhtml lcov.info -o coverage/"
   },
@@ -31,5 +36,8 @@
     "eslint": "^9.39.2"
   },
   "type": "module",
+  "engines": {
+    "node": ">=10"
+  },
   "sideEffects": false
 }

@@ -1,6 +1,8 @@
 /* eslint max-statements:0 */
 'use strict';
 
+// Note: this file also runs via test-require.cjs, with imports replaced.
+
 import {describe, it} from 'node:test';
 import assert from 'node:assert';
 import {parse as parseUrl} from 'node:url';
