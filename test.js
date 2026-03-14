@@ -128,6 +128,7 @@ describe('getProxyForUrl', function() {
     // Crazy values should be passed as-is. It is the responsibility of the
     // one who launches the application that the value makes sense.
     // TODO: Should we be stricter and perform validation?
+    // See https://github.com/Rob--W/proxy-from-env/issues/41
     env.HTTP_PROXY = 'Crazy \n!() { ::// }';
     testProxyUrl(env, 'Crazy \n!() { ::// }', 'http://wow');
 
