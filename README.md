@@ -90,8 +90,8 @@ currently behind `NODE_USE_ENV_PROXY=1` or `--use-env-proxy`. For details, see:
 
 
 ## Environment variables
-The environment variables can be specified in lowercase or uppercase, with the
-lowercase name having precedence over the uppercase variant. A variable that is
+The environment variables can be specified in all lowercase or all uppercase,
+with lowercase taking precedence over the uppercase variant. A variable that is
 not set has the same meaning as a variable that is set but has no value.
 
 ### NO\_PROXY

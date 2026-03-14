@@ -413,6 +413,36 @@ describe('getProxyForUrl', function() {
     testProxyUrl(env, '', 'http://zZz');
   });
 
+  describe('no_proxy and NO_PROXY precedence', function() {
+    var env = {};
+    env.HTTP_PROXY = 'http://proxy';
+    // eslint-disable-next-line camelcase
+    env.no_proxy = 'lower';
+    env.NO_PROXY = 'upper';
+
+    testProxyUrl(env, '', 'http://lower');
+    testProxyUrl(env, 'http://proxy', 'http://upper');
+  });
+
+  describe('unrecognized mixed case environment variables', function() {
+    // Mixed case environment variables are not supported and ignored.
+    var env = {};
+    // eslint-disable-next-line camelcase
+    env.Https_Proxy = 'http://proxy';
+    testProxyUrl(env, '', 'https://example');
+
+    env.HTTPS_PROXY = 'http://proxy';
+    testProxyUrl(env, 'http://proxy', 'https://example');
+
+    // eslint-disable-next-line camelcase
+    env.No_Proxy = 'example';
+    testProxyUrl(env, 'http://proxy', 'https://example');
+
+    // eslint-disable-next-line camelcase
+    env.no_proxy = 'example';
+    testProxyUrl(env, '', 'https://example');
+  });
+
   // Up until proxy-from-env@1.1.0, proxy-from-env had undocumented support for
   // specifying proxies through npm_config_ prefixes. The historical reasons
   // for them are no longer relevant:
